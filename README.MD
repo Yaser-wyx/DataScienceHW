@@ -13,3 +13,6 @@ Solution: Word Embedding + Cosine Similarity Implementation Steps:
 
 Result:
 ![](HW1_result.jpg)
+
+References:
+1. Briggs, J. (2021, May 5). BERT For Measuring Text Similarity. Retrieved from https://towardsdatascience.com/bert-for-measuring-text-similarity-eec91c6bf9e1
