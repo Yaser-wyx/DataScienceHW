@@ -10,7 +10,7 @@
 """
 from loguru import logger
 from matplotlib import pyplot as plt
-from transformers import BertModel, BertTokenizer
+from transformers import DistilBertModel, DistilBertTokenizer
 import torch
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
@@ -35,7 +35,7 @@ def get_embeddings(model, tokenizer, sentences):
     return sentences_embedding
 
 
-def show_result(result_pd):
+def show_img_result(result_pd):
     matplotlib.rcParams['font.family'] = 'SimHei'  # set chinese font
     fig = plt.figure(figsize=(5, 6), dpi=1400)
     ax = fig.add_subplot(111, frame_on=False)  # no visible frame
@@ -47,18 +47,24 @@ def show_result(result_pd):
     plt.savefig('HW1_result.jpg')  # save as image
 
 
+def load_test_sentences(txt_path):
+    test_sentences = []
+    with open(txt_path, mode="r", encoding="utf-8") as file:
+        for line in file.readlines():
+            test_sentences.append(line.strip())  # remove the blank and \n
+    return test_sentences
+
+
 def main():
     # loading tokenizer and model
     logger.info("loading tokenizer and model....")
-    tokenizer = BertTokenizer.from_pretrained("hfl/chinese-roberta-wwm-ext-large")
-    model = BertModel.from_pretrained("hfl/chinese-roberta-wwm-ext-large")
+
+    tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-multilingual-cased")
+
+    model = DistilBertModel.from_pretrained("distilbert-base-multilingual-cased")
     # test sentences
-    sentences = [
-        "这是测试的第一句话",
-        "这是测试的第二句话",
-        "BERT用于计算句子文本相似度",
-        "LG 开始为通用汽车量产锂电池"
-    ]
+    txt_path = "TestSentences.txt"
+    sentences = load_test_sentences(txt_path)
     # get sentences' embedding and convert them to numpy array
     logger.info("get embedding....")
     sentences_embedding = get_embeddings(model, tokenizer, sentences).detach().numpy()
@@ -71,8 +77,10 @@ def main():
             data.append([sentences[idx], sentences[idx2], f"{round(cosine_similarity_result * 100, 3)}%"])
 
     result_pd = pd.DataFrame(data=data, columns=("sentenceA", "sentenceB", "similarity"))
+    logger.info("save as excel....")
+    result_pd.to_excel("./HW1_result.xlsx")
     logger.info("show result....")
-    show_result(result_pd)
+    show_img_result(result_pd)
     logger.info("finished!")
 
 
