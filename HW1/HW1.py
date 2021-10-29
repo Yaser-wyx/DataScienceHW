@@ -36,8 +36,11 @@ def get_embeddings(model, tokenizer, sentences):
 
 
 def show_img_result(result_pd):
+    # matplotlib.rcParams['font.size'] = 35  # set fontsize
+    matplotlib.rc('font', size=200)
     matplotlib.rcParams['font.family'] = 'SimHei'  # set chinese font
-    fig = plt.figure(figsize=(5, 6), dpi=1400)
+
+    fig = plt.figure(dpi=500)
     ax = fig.add_subplot(111, frame_on=False)  # no visible frame
     ax.xaxis.set_visible(False)  # hide the x axis
     ax.yaxis.set_visible(False)  # hide the y axis
@@ -63,7 +66,7 @@ def main():
 
     model = DistilBertModel.from_pretrained("distilbert-base-multilingual-cased")
     # test sentences
-    txt_path = "TestSentences.txt"
+    txt_path = "/data/wyx/project/DataScienceHW/HW1/TestSentences.txt"
     sentences = load_test_sentences(txt_path)
     # get sentences' embedding and convert them to numpy array
     logger.info("get embedding....")
